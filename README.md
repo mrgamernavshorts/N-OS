@@ -1,6 +1,6 @@
 # N-OS
 
-A Operating system built from the ground up!
+A x86 Operating system built from the ground up!
 
 (It is being actively worked on, so it's incomplete. I just wanted to mark a beginning point, so I made a Repo for it :D)
 
