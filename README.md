@@ -5,7 +5,7 @@ A x86 legacy boot Operating system built from the ground up!
 (It is being actively worked on, so it's incomplete. I just wanted to mark a beginning point, so I made a Repo for it :D)
 
 > [!CAUTION]
-> This OS is currently only tested on a VM, but some BIOS'es reject flash drives when they have floppy images, so it currently does not work. Will be fixed soon.
+> This OS is currently only tested on a VM, but some BIOS'es reject flash drives when they have floppy images, so bare metal boot may not work. Will be fixed soon.
 
 # Build Instructions
 
