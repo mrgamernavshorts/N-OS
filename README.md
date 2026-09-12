@@ -5,7 +5,7 @@ A x86 legacy boot Operating system built from the ground up!
 (It is being actively worked on, so it's incomplete. I just wanted to mark a beginning point, so I made a Repo for it :D)
 
 > [!CAUTION]
-> This OS currently runs only on 32-bit only or 16-bit processors, and the OS will be switched to work on 32/64 bit processors only.
+> This OS is currently only tested on a VM, but some BIOS'es reject flash drives when they have floppy images, so it currently does not work. Will be fixed soon.
 
 # Build Instructions
 
