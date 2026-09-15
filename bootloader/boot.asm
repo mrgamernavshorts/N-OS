@@ -135,6 +135,8 @@ start:
 
 
 .load_kernel_loop:
+  mov si, LoadingKernelMessage
+  call puts
   ; Read next cluster
   mov ax, [kernel_cluster]
 
@@ -336,9 +338,10 @@ disk_reset:
 
 ; [Note]: here, 10 in ASCII is LF, and 13 is CR (line feed and carriage return)
 ;WelcomeMessage: db 10, "|\\  |   //-\\    //-\\", 10, 13, "| \\ | - |   |    \\", 10, 13, "|  \\|   \\-// \\_//", 10, 10, 13,"Welcome to N-OS!", 10, 13, 0
-FloppyReadingMessage: db "Reading from floppy..", 10, 13, 0
+LoadingKernelMessage: db "Loading the kernel..", 10, 13, 0
 FloppyReadFailedMessage: db "Read from floppy failed!", 0
 kernelNotFoundMessage: db "Kernel not found!", 0
+
 
 kernel_cluster: dw 0
 file_kernel_bin: db "KERNEL  BIN"
