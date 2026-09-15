@@ -1,15 +1,24 @@
-org 0x7C00
+org 0x0
 bits 16
 
-start:
-  jmp main
-
 ; [Note] ds:si will point to the string in memory
+
+start:
+
+  ; Print the welcome message
+  mov si, WelcomeMessage
+  call puts
+
+.halt:
+  cli
+  hlt
+
 
 puts:
   ; Save si/ax onto the stack
   push si
   push ax
+  push bx
 
 .loop:
   lodsb ; This will load the a char of the string ds:si into al register, and increments si.
@@ -27,29 +36,11 @@ puts:
 
 .done:
   ; FILO go brrrrrrr
+  pop bx
   pop ax
   pop si
   ret
 
-main:
-  ; Initialize the ds/es registers here
-  mov ax, 0
-  mov ds, ax
-  mov es, ax
-
-  ; Stack go brrrr
-  mov ss, ax
-  mov sp, 0x7C00
-
-  ; Print the welcome message
-  mov si, WelcomeMessage
-  call puts
-
-
-  hlt
-
-.halt:
-  jmp .halt
 
 ; [Note]: here, 10 in ASCII is LF, and 13 is CR (line feed and carriage return)
 ; [Todo]: Make ASCII art for startup.
@@ -59,5 +50,3 @@ WelcomeMessage: db 10, "|\\  |   //-\\    //-\\", 10, 13, "| \\ | - |   |    \\"
 ; | \\ | - |   |    \\
 ; |  \\|   \\-// \\_//
 
-times 510 - ($-$$) db 0
-dw 0xAA55

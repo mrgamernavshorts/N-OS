@@ -29,11 +29,191 @@ ebr_volume_id:              db 12h, 34h, 56h, 78h   ; Serial number, value doesn
 ebr_volume_label:           db "N-OS       "        ; 11 bytes, needs to be exactly 11 bytes, so padded with spaces.
 ebr_system_id:              db "FAT12   "           ; 8 bytes, also padded with spaces.
 
+; [Note] ds:si will point to the string in memory
 
 start:
-  jmp main
 
-; [Note] ds:si will point to the string in memory
+  ; Initialize the ds/es registers here
+  mov ax, 0
+  mov ds, ax
+  mov es, ax
+
+  ; Stack go brrrr
+  mov ss, ax
+  mov sp, 0x7C00
+
+  ; Some BIOS'es can start us at 07C0:0000 instead of 0000:7C00
+  push es ; Intended new cs
+  push word .after ; Intended new ip
+  retf ; This will pop the .after into ip and es into cs (Both are before save on the stack).
+  ; Now, the code execution will start at cs:ip (0000: location of .after)
+
+.after:
+
+  mov [ebr_drive_number], dl ; Assigns the calue of dl(drive number, most prob. the first floppy disk), so we can read from it.
+
+  ; Read from the drive
+  push es
+  mov ah, 08h
+  int 13h
+  jc floppy_read_error ; Will jump to floppy_read_error if CF is 1(dis read failed.)
+  pop es
+
+  ; Not relying on the data on the disk, because the disk could get corrupted.
+  and cl, 0x3F ; Remove top 2 bits
+  xor ch, ch
+  mov [bdb_sectors_per_track], cx ; Sector count
+  
+  inc dh
+  mov [bdb_heads], dh ; Head count
+
+  ; Read the Root directory
+  mov ax, [bdb_sectors_per_fat] ; Compute the LBA location of root directory. lba = Reserved + fats * sectors_per_fat
+  mov bl, [bdb_fat_count]
+  xor bh, bh
+  mul bx ; This will do ax * bl and store the result into ax (ax = fats * sectors_per_fat)
+  add ax, [bdb_reserved_sectors] ; now ax = Reserved + fats * sectors_per_fat
+  push ax
+
+  ; Compute size of the root directory = (32 * number_of_entries) / bytes_per_sector
+  mov ax, [bdb_dir_entries_count]
+  shl ax, 5 ; Multiplies ax by 32 (haha no imul ax, 32 because I need that 1 byte boiiiiiiiii)
+  xor dx, dx ; haha no mov dx, 0 because I wanna save that 1 byte boi.(this is 2 bytes and that is 3 bytes)
+  div word [bdb_bytes_per_sector] ; This will do ax / bytes_per_sector
+
+  test dx, dx ; if dx != 0, add 1(Does a bitwise AND)
+  jz .root_dir_after ; Jump id Zero flage is set(Will be set by test if dx == 0).
+  inc ax ; If division remainder != 0, add 1
+
+.root_dir_after:
+  ; Read the root directory
+  mov cl, al ; cl = no. of sectors to read(size of root directory).
+  pop ax ; ax = LBA of root directory.
+  mov dl, [ebr_drive_number] ; Drive number (Saved previously)
+  mov bx, buffer ; es:bx = buffer
+  call disk_read
+
+  ; search for kernel.bin
+  xor bx, bx ; We will use this to keep track of the current directory entry count.
+  mov di, buffer
+
+.search_kernel:
+  mov si, file_kernel_bin
+  mov cx, 11 ; Length of the 'KERNEL  BIN', which is always 11 characters (As per fat12 limitations)
+  push di
+  
+  repe cmpsb ; Compares the bytes at ds:si and es:si, and does so repeatedly until they differ, or cx reaches 0
+
+  pop di
+  je .kernel_found ; jumps to the .kernel_found label if ZF is set.
+  
+  ; Kernel not found; starting the next iteration.
+  add di, 32 ; Next directory entry.
+  inc bx ; Inc bx accordingly.
+  cmp bx, [bdb_dir_entries_count]
+  jl .search_kernel ; Will jump to the starting if bx is less than the total dir_entries_count.
+
+  ; Jump to kernel_not_found_aaaa if kernel couldn't be found.
+  jmp kernel_not_found_aaaa
+
+.kernel_found:
+  
+  ; di should have the address to the entry
+  mov ax, [di + 26] ; First logical cluster is at offset 26
+  mov [kernel_cluster], ax
+
+  ; load the FAT onto memory
+  mov ax, [bdb_reserved_sectors]
+  mov bx, buffer
+  mov cl, [bdb_sectors_per_fat]
+  mov dl, [ebr_drive_number]
+  call disk_read
+
+  mov bx, KERNEL_LOAD_SEGMENT
+  mov es, bx
+  mov bx, KERNEL_LOAD_OFFSET
+
+
+.load_kernel_loop:
+  ; Read next cluster
+  mov ax, [kernel_cluster]
+
+  ; Hardcoded the value, will change in the future (Please send help)
+  add ax, 31 ; first cluster  = (kernel_cluster - 2) * bdb_sectors_per_cluster * start_sector
+             ; start sector  = Reserved + fats + root dir size = 1 + 18 + 134 = 33
+  
+  mov cl, 1
+  mov dl, [ebr_drive_number]
+  call disk_read
+
+  add bx, [bdb_bytes_per_sector]
+
+  ; Compute location of the next cluster
+  mov ax, [kernel_cluster]
+  mov cx, 3
+  mul cx
+  mov cx, 2
+  div cx
+
+  mov si, buffer
+  add si, ax
+  mov ax, [ds:si] ; Read entry from fat table at index ax
+
+  or dx, dx
+  jz .even ; jumps when ZF == 1
+
+.odd:
+  shr ax, 4
+  jmp .next_cluster_after
+
+.even:
+  and ax, 0x0FFF
+
+.next_cluster_after:
+
+  cmp ax, 0x0FF8 ; Check if end of file.
+  jae .read_finish ; Jump to .read_finish if ax is equal or above than 0xFF8
+  mov [kernel_cluster], ax
+  jmp .load_kernel_loop
+
+
+.read_finish:
+  ; jump to our kernel
+  mov dl, [ebr_drive_number] ; boot device in dl
+
+  mov ax, KERNEL_LOAD_SEGMENT ; set the segment registers
+  mov ds, ax
+  mov es, ax 
+
+  jmp KERNEL_LOAD_SEGMENT:KERNEL_LOAD_OFFSET
+
+  jmp RebootOnKeypress ; Should never happen
+
+  cli ; Disable interrupts, so any interrupt does not forces our proccessor out of the "halt" state.
+  hlt
+
+;------------------------
+; Error handlers (YAY :D)
+;------------------------
+
+floppy_read_error:
+  mov si, FloppyReadFailedMessage
+  call puts
+  jmp RebootOnKeypress
+
+kernel_not_found_aaaa:
+  mov si, kernelNotFoundMessage
+  call puts
+  jmp RebootOnKeypress
+
+RebootOnKeypress:
+  mov ah, 0
+  int 16h ; Waits for keypress
+  jmp 0FFFFh:0 ; Location where the BIOS starts, jumps to that, rebooting the system
+
+.halt:
+  cli ; Disable interrupts
+  hlt
 
 puts:
   ; Save si/ax onto the stack
@@ -60,36 +240,6 @@ puts:
   pop si
   ret
 
-main:
-  ; Initialize the ds/es registers here
-  mov ax, 0
-  mov ds, ax
-  mov es, ax
-
-  ; Stack go brrrr
-  mov ss, ax
-  mov sp, 0x7C00
-
-  ; Print the welcome message
-  mov si, WelcomeMessage
-  call puts
-
-  cli ; Disable interrupts, so any interrupt does not forces our proccessor out of the "halt" state.
-  hlt
-
-floppy_read_error:
-  mov si, FloppyReadFailedMessage
-  call puts
-  jmp RebootOnKeypress
-
-RebootOnKeypress:
-  mov ah, 0
-  int 16h ; Waits for keypress
-  jmp 0FFFFh ; Location where the BIOS starts, jumps to that, rebooting the system
-
-.halt:
-  cli ; Disable interrupts
-  hlt
 
 ; Params:
 ; ax = LBA value
@@ -185,8 +335,18 @@ disk_reset:
   ret
 
 ; [Note]: here, 10 in ASCII is LF, and 13 is CR (line feed and carriage return)
-WelcomeMessage: db 10, "|\\  |   //-\\    //-\\", 10, 13, "| \\ | - |   |    \\", 10, 13, "|  \\|   \\-// \\_//", 10, 10, 13,"Welcome to N-OS!", 10, 13, 0
-FloppyReadFailedMessage: db "Read from floppy failed. Press any key to reboot.", 0
+;WelcomeMessage: db 10, "|\\  |   //-\\    //-\\", 10, 13, "| \\ | - |   |    \\", 10, 13, "|  \\|   \\-// \\_//", 10, 10, 13,"Welcome to N-OS!", 10, 13, 0
+FloppyReadingMessage: db "Reading from floppy..", 10, 13, 0
+FloppyReadFailedMessage: db "Read from floppy failed!", 0
+kernelNotFoundMessage: db "Kernel not found!", 0
+
+kernel_cluster: dw 0
+file_kernel_bin: db "KERNEL  BIN"
+
+; This segment contains the most amount if of contiguos memory, and is the biggest, around 480 kb
+; We can't use more than 1 MB because we are currently in 16 bit real mode.
+KERNEL_LOAD_SEGMENT equ 0x2000 ; equ doesn't loads the constant values onto memory
+KERNEL_LOAD_OFFSET equ 0
 
 ; |\\  |   //-\\    //-\\
 ; | \\ | - |   |    \\
@@ -194,3 +354,5 @@ FloppyReadFailedMessage: db "Read from floppy failed. Press any key to reboot.",
 
 times 510 - ($-$$) db 0
 dw 0xAA55
+
+buffer:
