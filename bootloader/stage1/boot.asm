@@ -338,13 +338,13 @@ disk_reset:
 
 ; [Note]: here, 10 in ASCII is LF, and 13 is CR (line feed and carriage return)
 ;WelcomeMessage: db 10, "|\\  |   //-\\    //-\\", 10, 13, "| \\ | - |   |    \\", 10, 13, "|  \\|   \\-// \\_//", 10, 10, 13,"Welcome to N-OS!", 10, 13, 0
-LoadingKernelMessage: db "Loading the kernel..", 10, 13, 0
+LoadingKernelMessage: db "#Loading the stage2..", 10, 13, 0
 FloppyReadFailedMessage: db "Read from floppy failed!", 0
-kernelNotFoundMessage: db "Kernel not found!", 0
+kernelNotFoundMessage: db "stage2 not found!", 0
 
 
 kernel_cluster: dw 0
-file_kernel_bin: db "KERNEL  BIN"
+file_kernel_bin: db "STAGE2  BIN"
 
 ; This segment contains the most amount if of contiguos memory, and is the biggest, around 480 kb
 ; We can't use more than 1 MB because we are currently in 16 bit real mode.

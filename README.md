@@ -6,8 +6,15 @@ A x86 legacy boot Operating system built from the ground up!
 
 Now it works on bare metal!
 
-## Build Instructions
+# Build Instructions
 
+## Dependencies
+
+* mcopy
+* Qemu (Or any VM software)
+* Watcom (C compiler, should be wcc _(The 16-bit compiler)_))
+
+## Procedure
 
 Clone the Repo and CD into it:
 ```Bash
