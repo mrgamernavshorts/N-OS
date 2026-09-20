@@ -1,2 +1,3 @@
 build/*
-*.obj
+bootloader/stage2/c/*
+bootloader/stage2/asm/*
