@@ -3,7 +3,7 @@ A x86 operating system, utilizing legacy boot!
 This was rewritten due to the higher complexity of the [old N-OS](https://github.com/mrgamernavshorts/N-OS-old) project.
 
 > [!NOTE]
-> This project is currently in **Alpha**, you are free to post any Issues [here](https://github.com/mrgamernavshorts/N-OS-old/issues).
+> This project is currently in **Alpha**, you are free to post any Issues [here](https://github.com/mrgamernavshorts/N-OS/issues).
 
 # Dependencies
 These Dependencies are required to compile N-OS:
