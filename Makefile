@@ -29,4 +29,4 @@ run:
 	qemu-system-i386 -drive file=build/nos.img,format=raw -display gtk
 
 clean:
-	rm -r $(BUILD_DIR)
+	rm -r build
