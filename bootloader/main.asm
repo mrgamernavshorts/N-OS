@@ -75,7 +75,7 @@ puts:
 
 .loop:
   lodsb ; Will increment si(The current char), and load it's value onto al.
-  or al, al ; Check if null-terminator; Will set the ZERO flag to 0 if yes.
+  or al, al ; Check if null-terminator; Will set the ZERO flag to 1 if yes.
 
   jz .ok
 
