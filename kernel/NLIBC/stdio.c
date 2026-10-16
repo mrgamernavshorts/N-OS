@@ -1,6 +1,10 @@
+#ifndef NLIBC_STDIO_C
+#define NLIBC_STDIO_C
+// clang-format off
+
 #include "stdio.h"
 #include "stdint.h"
-// clang-format off
+
 #define VGA_WIDTH 80
 #define VGA_HEIGHT 25
 
@@ -32,3 +36,5 @@ void clear_vga(){
   CurrVGAColumn = 0;
   CurrVGARow = 0;
 }
+
+#endif
