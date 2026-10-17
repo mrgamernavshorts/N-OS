@@ -8,6 +8,15 @@ This was rewritten due to the higher complexity of the [old N-OS](https://github
 > [!NOTE]
 > This project is currently in **Alpha**, you are free to post any Issues [here](https://github.com/mrgamernavshorts/N-OS/issues).
 
+# Features
+Here is what N-OS currently supports, more will be added later:
+
+* PS/2 Keyboard support.
+* Legacy-only BIOS support.
+* 32 bit support.
+* Interactive shell.
+* It's own LIBC(NLIBC).
+
 # Dependencies
 These Dependencies are required to compile N-OS:
 * gcc
