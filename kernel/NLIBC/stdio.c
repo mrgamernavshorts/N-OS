@@ -16,7 +16,8 @@ void putc(char c) {
   if (c == '\n') {
     CurrVGARow++;
     CurrVGAColumn = 0;
-  } else {
+  } else if(c == '\0') return;
+  else {
     vga[(CurrVGARow * VGA_WIDTH) + CurrVGAColumn] = c | (0x07 << 8);
     CurrVGAColumn++;
   }
