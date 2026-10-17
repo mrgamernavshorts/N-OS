@@ -1,5 +1,8 @@
 # N-OS
 A x86 operating system, utilizing legacy boot!
+
+<center><img src="githubassets/nos-ss.png" style="width: 550px"/></center>
+
 This was rewritten due to the higher complexity of the [old N-OS](https://github.com/mrgamernavshorts/N-OS-old) project.
 
 > [!NOTE]
