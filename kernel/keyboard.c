@@ -1,3 +1,6 @@
+#ifndef NKERNEL_KEYBOARD
+#define NKERNEL_KEYBOARD
+
 #include "NLIBC/stdint.h"
 
 // clang-format off
@@ -59,7 +62,10 @@ char scancodeToChar(uint8_t scancode){
     // Spashiool keys
     case 0x1C: return '\n';
     case 0x39: return ' ';
+    case 0x0E: return '\b';
 
     default:   return '\0'; // Haha no key for you >:D
   }
 }
+
+#endif
