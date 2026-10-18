@@ -12,7 +12,7 @@ build:
 	$(CC) -m32 -nostdlib -no-pie -Wl,-T,linker.ld -Wl,--build-id=none -o ./build/kernel.elf ./build/entry.o ./build/kernel.o ./build/io.o
 	cp ./build/kernel.elf ./iso/boot/kernel.elf
 	cat ./configs/grub.cfg > ./iso/boot/grub/grub.cfg
-	grub-mkrescue -o build/nos.iso iso/
+	grub-mkrescue --directory=/usr/lib/grub/i386-pc -o build/nos.iso iso/
 
 run: build
 	qemu-system-i386 -machine pc -cdrom build/nos.iso -display gtk
