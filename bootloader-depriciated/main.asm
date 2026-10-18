@@ -1,3 +1,4 @@
+; This custom bootloader is now depriciated, and grub is now used.
 org 0x7C00
 bits 16
 

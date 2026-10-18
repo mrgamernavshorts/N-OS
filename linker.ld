@@ -2,8 +2,11 @@ ENTRY(_start)
 
 SECTIONS
 {
-    . = 0x7E00;
-    .text : { *(.text*) }
+    . = 1M;
+    .text : {
+      *(.multiboot)
+      *(.text*)
+    }
     .rodata : { *(.rodata*) }
     .data : { *(.data*) }
     .bss : { *(COMMON) *(.bss*) }

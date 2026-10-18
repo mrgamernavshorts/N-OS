@@ -5,19 +5,18 @@ CC = gcc
 
 build:
 	mkdir -p build/
+	mkdir -p iso/boot/grub
 	$(ASMC) -f elf32 ./kernel/main.asm -o ./build/entry.o
 	$(ASMC) -f elf32 ./kernel/asm/io.asm -o ./build/io.o
 	$(CC) -m32 -ffreestanding -fno-pie -fno-stack-protector -O2 -Wall -Wextra -c ./kernel/kernel.c -o ./build/kernel.o
-	$(CC) -m32 -nostdlib -no-pie -Wl,-T,kernel.ld -Wl,--build-id=none -o ./build/kernel.elf ./build/entry.o ./build/kernel.o ./build/io.o
-	objcopy -O binary ./build/kernel.elf ./build/kernel.bin
-	chmod +x ./shell-scripts/*
-	./shell-scripts/build-bootloader.sh
-	cat ./build/boot.bin > ./build/nos.img
-	cat ./build/kernel.bin >> ./build/nos.img
-	truncate -s 1474560 ./build/nos.img
+	$(CC) -m32 -nostdlib -no-pie -Wl,-T,linker.ld -Wl,--build-id=none -o ./build/kernel.elf ./build/entry.o ./build/kernel.o ./build/io.o
+	cp ./build/kernel.elf ./iso/boot/kernel.elf
+	cat ./configs/grub.cfg > ./iso/boot/grub/grub.cfg
+	grub-mkrescue -o build/nos.iso iso/
 
 run: build
-	qemu-system-i386 -machine pc -drive file=build/nos.img,format=raw -display gtk
+	qemu-system-i386 -machine pc -cdrom build/nos.iso -display gtk
 
 clean:
 	rm -r build
+	rm -r iso

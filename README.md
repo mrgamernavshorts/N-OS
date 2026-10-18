@@ -20,8 +20,12 @@ Here is what N-OS currently supports, more will be added later:
 # Dependencies
 These Dependencies are required to compile N-OS:
 * gcc
+* grub, xorriso
+* mtools
 * nasm + ld(Nasm's linker)
 * Qemu(Optional, for testing)
+
+All of these can be installed by your package manager.
 
 # Build instructions
 Steps to build N-OS are listed here.
@@ -35,7 +39,7 @@ Then, run `make`:
 ```bash
 make
 ```
-This will build the OS in the `build/` directory, named `nos.img`.
+This will build the OS in the `build/` directory, named `nos.iso`.
 
 You can also use `make clean` and `make run`:
 ```bash
