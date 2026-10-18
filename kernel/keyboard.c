@@ -63,13 +63,19 @@ char scancodeToChar(uint8_t scancode){
     case 0x32: return shiftPressed ? 'M' : 'm';
 
     // Spashiool keys
-    case 0x1C: return shiftPressed ? : '\n';
-    case 0x39: return shiftPressed ? : ' ';
-    case 0x0E: return shiftPressed ? : '\b';
-    case 0x2A:
+    case 0x1C: return '\n';
+    case 0x39: return ' ';
+    case 0x0E: return '\b';
+    case 0x2A: // Left shift press.
       shiftPressed = 1;
       return '\0';
-    case 0xAA:
+    case 0xAA: // Left shift release.
+      shiftPressed = 0;
+      return '\0';
+    case 0x36: // Right shift press.
+      shiftPressed = 1;
+      return '\0';
+    case 0xB6: // Right shift release.
       shiftPressed = 0;
       return '\0';
 
