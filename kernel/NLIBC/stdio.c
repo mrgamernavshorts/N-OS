@@ -25,8 +25,7 @@ void putc(char c) {
       CurrVGAColumn--;
       vga[(CurrVGARow * VGA_WIDTH) + CurrVGAColumn] = ' ';
     }
-  }
-  else {
+  } else {
     vga[(CurrVGARow * VGA_WIDTH) + CurrVGAColumn] = c | (0x07 << 8);
     CurrVGAColumn++;
   }
@@ -55,13 +54,17 @@ void sscanf(char *buff){
           buffIndex = 0;
           continue;
         }
-
         buffIndex--;
         buff[buffIndex] = '\0';
         putc(c);
-
-        
-      } else {
+      } else if(c == '\t'){
+        for(vuint32_t i = 0; i < 2; i++){
+          buff[buffIndex] = ' ';
+          buffIndex++;
+          putc(' ');
+        }
+      }
+      else {
         buff[buffIndex] = c;
         buffIndex++;
         putc(c);
