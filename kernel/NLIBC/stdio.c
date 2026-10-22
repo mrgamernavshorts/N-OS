@@ -1,17 +1,15 @@
 #ifndef NLIBC_STDIO_C
 #define NLIBC_STDIO_C
-// clang-format off
 
 #include "stdio.h"
 #include "stdint.h"
-#include "../keyboard.c"
+#include "../nkernel/io.c"
 
 #define VGA_WIDTH 80
 #define VGA_HEIGHT 25
 
 vuint16_t CurrVGARow = 0;
 vuint16_t CurrVGAColumn = 0;
-vuint16_t *vga = (uint16_t *)0xB8000;
 
 void putc(char c) {
   if (c == '\n') {
@@ -23,10 +21,10 @@ void putc(char c) {
       return;
     } else {
       CurrVGAColumn--;
-      vga[(CurrVGARow * VGA_WIDTH) + CurrVGAColumn] = ' ';
+      io_write_char_vga(' ', (CurrVGARow * VGA_WIDTH) + CurrVGAColumn);
     }
   } else {
-    vga[(CurrVGARow * VGA_WIDTH) + CurrVGAColumn] = c | (0x07 << 8);
+    io_write_char_vga(c, (CurrVGARow * VGA_WIDTH) + CurrVGAColumn);
     CurrVGAColumn++;
   }
 }
@@ -75,9 +73,8 @@ void sscanf(char *buff){
 
 void clear_vga(){
   for(uint32_t i = 0; i != VGA_WIDTH * VGA_HEIGHT; i++){
-    vga[i] = ' ' | (0x07 << 8);
+    io_write_char_vga(' ', i);
   }
-
   CurrVGAColumn = 0;
   CurrVGARow = 0;
 }

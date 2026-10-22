@@ -1,9 +1,8 @@
 #include "NLIBC/stdint.h"
 #include "NLIBC/stdio.c"
 #include "NLIBC/string.c"
-// clang-format off
 
-void kernel_main(void) {
+void kernel_main() {
   clear_vga();
   puts("|\\\\  ||   //==\\\\    //==\\\\ \n||\\\\ || - ||  ||    \\\\ \n|| \\\\|| - ||  ||     \\\\ \n||  \\\\|   \\\\==// \\\\==// \n");
   puts("Welcome to the NEW and IMPROVED: N-OS!\n");

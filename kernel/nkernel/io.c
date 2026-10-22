@@ -1,14 +1,15 @@
-#ifndef NKERNEL_KEYBOARD
-#define NKERNEL_KEYBOARD
+#ifndef NKERNEL_IO_C
+#define NKERNEL_IO_C
 
-#include "NLIBC/stdint.h"
+#include "io.h"
 
-// clang-format off
-extern uint8_t inb(uint16_t port);
-extern void outb(uint16_t port, uint8_t value);
+vuint16_t *vga = (uint16_t *)0xB8000;
+vuint8_t shiftPressed = 0;
+vuint8_t capsLockEnabled = 0;
 
-#define PS2_DATA 0x60
-#define PS2_STATUS 0x64
+void io_write_char_vga(char c, uint32_t index){
+  vga[index] = c | (0x07 << 8);
+}
 
 int keyboardPoll(uint8_t* scancode){
   if((inb(PS2_STATUS) & 1) == 0){
@@ -17,9 +18,6 @@ int keyboardPoll(uint8_t* scancode){
   *scancode = inb(PS2_DATA);
   return 0;
 }
-
-vuint8_t shiftPressed = 0;
-vuint8_t capsLockEnabled = 0;
 
 char scancodeToChar(uint8_t scancode){
   switch (scancode) {
@@ -100,5 +98,7 @@ char scancodeToChar(uint8_t scancode){
     default: return '\0'; // Haha no key for you >:D
   }
 }
+
+
 
 #endif
