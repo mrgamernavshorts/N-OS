@@ -1,9 +1,14 @@
 #include "NLIBC/stdint.h"
 #include "NLIBC/stdio.c"
 #include "NLIBC/string.c"
+#include "nkernel/utifuncs.c"
 
-void kernel_main() {
+void kernel_main(uint32_t magic, uint32_t addr){
   clear_vga();
+  if(magic != 0x36d76289){
+    utifuncs_nkernel_panic("N-OS only supports the GRUB bootloader with the Multiboot2 protocol,\n but N-OS couldn't find the Multiboot2 magic number.\n");
+  }
+
   puts("|\\\\  ||   //==\\\\    //==\\\\ \n||\\\\ || - ||  ||    \\\\ \n|| \\\\|| - ||  ||     \\\\ \n||  \\\\|   \\\\==// \\\\==// \n");
   puts("Welcome to the NEW and IMPROVED: N-OS!\n");
   puts("\nType 'help' to get started.\n");

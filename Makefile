@@ -8,8 +8,9 @@ build:
 	mkdir -p iso/boot/grub
 	$(ASMC) -f elf32 ./kernel/main.asm -o ./build/entry.o
 	$(ASMC) -f elf32 ./kernel/asm/io.asm -o ./build/io.o
+	$(ASMC) -f elf32 ./kernel/asm/utifuncs.asm -o ./build/utifuncs.o
 	$(CC) -m32 -ffreestanding -fno-pie -fno-stack-protector -O2 -Wall -Wextra -c ./kernel/kernel.c -o ./build/kernel.o
-	$(CC) -m32 -nostdlib -no-pie -Wl,-T,linker.ld -Wl,--build-id=none -o ./build/kernel.elf ./build/entry.o ./build/kernel.o ./build/io.o
+	$(CC) -m32 -nostdlib -no-pie -Wl,-T,linker.ld -Wl,--build-id=none -o ./build/kernel.elf ./build/entry.o ./build/kernel.o ./build/io.o ./build/utifuncs.o
 	cp ./build/kernel.elf ./iso/boot/kernel.elf
 	cat ./configs/grub.cfg > ./iso/boot/grub/grub.cfg
 	grub-mkrescue --directory=/usr/lib/grub/i386-pc -o build/nos.iso iso/
