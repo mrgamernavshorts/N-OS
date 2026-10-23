@@ -13,6 +13,10 @@ vuint16_t CurrVGAColumn = 0;
 
 void putc(char c) {
   if (c == '\n') {
+    while(CurrVGAColumn >= VGA_WIDTH){
+      CurrVGARow++;
+      CurrVGAColumn -= VGA_WIDTH;
+    }
     CurrVGARow++;
     CurrVGAColumn = 0;
   } else if(c == '\0') return;
