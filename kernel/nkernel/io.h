@@ -3,6 +3,17 @@
 
 #include "../NLIBC/stdint.h"
 
+// ATA/IDE hardware ports.
+#define ATA_PRIMARY_DATA 0x1F0
+#define ATA_PRIMARY_SECTOR_COUNT 0x1F2
+#define ATA_PRIMARY_LBA_LOW 0x1F3
+#define ATA_PRIMARY_LBA_MID 0x1F4
+#define ATA_PRIMARY_LBA_HIGH 0x1F5
+#define ATA_PRIMARY_DEVICE 0x1F6
+#define ATA_PRIMARY_COMMAND 0x1F7
+#define ATA_PRIMARY_STATUS 0x1F7
+
+// PS/2 keyboard ports.
 #define PS2_DATA 0x60
 #define PS2_STATUS 0x64
 
@@ -16,5 +27,8 @@ void io_write_char_vga(char c, uint32_t index);
 // writes the scancode into `scancode`(Passed in by Refrence).
 // Returns 0 if Successful, and 1 if not.
 int keyboardPoll(uint8_t* scancode);
+
+// Takes a PS/2 keyboard scan code, and returns a Char related to it.
+char scancodeToChar(uint8_t scancode);
 
 #endif
