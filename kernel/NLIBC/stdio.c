@@ -10,6 +10,7 @@
 
 vuint16_t CurrVGARow = 0;
 vuint16_t CurrVGAColumn = 0;
+vuint8_t SSCANF_COMBINATION_HANDELED = 0;
 
 void putc(char c) {
   if (c == '\n') {
@@ -43,8 +44,17 @@ void sscanf(char *buff){
   uint8_t code;
   vuint32_t buffIndex = 0;
   volatile char c;
+  vuint8_t CtrlPressed = 0;
   for(;;){
+    SSCANF_COMBINATION_HANDELED = 0;
     if(!keyboardPoll(&code)){
+
+      if(code == 0x1D){
+        CtrlPressed = 1;
+      } else if(code == 0x9D){ // Left control released.
+          CtrlPressed = 0;
+      }
+
       c = scancodeToChar(code);
       if(c == '\0') continue;
       else if(c == '\n'){
@@ -65,6 +75,10 @@ void sscanf(char *buff){
           buffIndex++;
           putc(' ');
         }
+      } else if(CtrlPressed && c == 'l'){
+        clear_vga();
+        SSCANF_COMBINATION_HANDELED = 1;
+        break;
       }
       else {
         buff[buffIndex] = c;

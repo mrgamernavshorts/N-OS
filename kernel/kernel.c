@@ -23,7 +23,7 @@ void kernel_main(uint32_t magic, uint32_t addr){
       puts("|\\\\  ||   //==\\\\    //==\\\\ \n||\\\\ || - ||  ||    \\\\ \n|| \\\\|| - ||  ||     \\\\ \n||  \\\\|   \\\\==// \\\\==// \n");
     } else if(!strcmp(cmd, "clear")){
       clear_vga();
-    } else {
+    } else if(!SSCANF_COMBINATION_HANDELED) {
       puts("Command '");
       puts(cmd);
       puts("' not found.\n");

@@ -15,6 +15,7 @@ int keyboardPoll(uint8_t* scancode){
   if((inb(PS2_STATUS) & 1) == 0){
     return 1; // No key pressed :(
   }
+
   *scancode = inb(PS2_DATA);
   return 0;
 }
@@ -81,7 +82,7 @@ char scancodeToChar(uint8_t scancode){
       capsLockEnabled = capsLockEnabled ? 0 : 1;
       return '\0';
     case 0x0F: return '\t';
-
+      
     // Other Spaciool keys.
     case 0x33: return shiftPressed ? '<' : ',';
     case 0x34: return shiftPressed ? '>' : '.';
@@ -94,6 +95,7 @@ char scancodeToChar(uint8_t scancode){
     case 0x29: return shiftPressed ? '~' : '`';
     case 0x0C: return shiftPressed ? '_' : '-';
     case 0x0D: return shiftPressed ? '+' : '=';
+    
 
     default: return '\0'; // Haha no key for you >:D
   }

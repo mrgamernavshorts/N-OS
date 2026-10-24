@@ -3,7 +3,7 @@
 
 #include "../NLIBC/stdint.h"
 
-// ATA/IDE hardware ports.
+// ATA/IDE drive hardware ports.
 #define ATA_PRIMARY_DATA 0x1F0
 #define ATA_PRIMARY_SECTOR_COUNT 0x1F2
 #define ATA_PRIMARY_LBA_LOW 0x1F3
