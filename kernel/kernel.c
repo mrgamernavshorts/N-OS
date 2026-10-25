@@ -13,8 +13,8 @@ void kernel_main(uint32_t magic, uint32_t addr){
   }
 
   puts("|\\\\  ||   //==\\\\    //==\\\\ \n||\\\\ || - ||  ||    \\\\ \n|| \\\\|| - ||  ||     \\\\ \n||  \\\\|   \\\\==// \\\\==// \n");
-  puts("Welcome to the NEW and IMPROVED: N-OS!\n");
-  puts("\nType 'help' to get started.\n");
+  puts("\033[32mWelcome\033[37m to the \033[31mNEW \033[37mand \033[36mIMPROVED:\033[37m N-OS!\n");
+  puts("\nType \033[36m'help'\033[37m to get started.\n");
 
   char cmd[1024];
   for(;;){

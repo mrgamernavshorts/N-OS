@@ -37,23 +37,36 @@ void putc(char c, uint8_t fg, uint8_t bg) {
 }
 
 void puts(char *str) {
-  uint8_t fg;
-  char buff[5];
-  uint8_t bg = 0;
-  uint8_t j = 0;
+  char mode = '7'; // HAHA light gray go BRRRRR.
   for (vuint32_t i = 0; str[i] != '\0'; i++) {
-    /*
     if(str[i] == '\033'){
-      i++;
-      if(str[i] == '['){
+      i += 2;
+      if(str[i] == '3'){
         i++;
-        memcpycUntil(buff, str+i, 'm');
-        itoa()
+        switch(str[i]){
+          case '0': mode = '0'; break;
+          case '1': mode = '1'; break;
+          case '2': mode = '2'; break;
+          case '3': mode = '3'; break;
+          case '4': mode = '4'; break;
+          case '5': mode = '5'; break;
+          case '6': mode = '6'; break;
+          case '7': mode = '7'; break;
         }
+        i += 2;
       }
     }
-    */
-    putc(str[i], VGA_LIGHT_GRAY, VGA_BLACK);
+    
+    switch(mode){
+      case '0': putc(str[i], VGA_BLACK, VGA_BLACK); break;
+      case '1': putc(str[i], VGA_RED, VGA_BLACK); break;
+      case '2': putc(str[i], VGA_GREEN, VGA_BLACK); break;
+      case '3': putc(str[i], VGA_BROWN, VGA_BLACK); break;
+      case '4': putc(str[i], VGA_BLUE, VGA_BLACK); break;
+      case '5': putc(str[i], VGA_PURPLE, VGA_BLACK); break;
+      case '6': putc(str[i], VGA_CYAN, VGA_BLACK); break;
+      case '7': putc(str[i], VGA_LIGHT_GRAY, VGA_BLACK); break;
+    }
   }
 }
 
