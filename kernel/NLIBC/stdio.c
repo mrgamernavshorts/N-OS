@@ -4,6 +4,8 @@
 #include "stdio.h"
 #include "stdint.h"
 #include "../nkernel/io.c"
+#include "string.c"
+#include "stdlib.c"
 
 #define VGA_WIDTH 80
 #define VGA_HEIGHT 25
@@ -12,7 +14,7 @@ vuint16_t CurrVGARow = 0;
 vuint16_t CurrVGAColumn = 0;
 vuint8_t SSCANF_COMBINATION_HANDELED = 0;
 
-void putc(char c) {
+void putc(char c, uint8_t fg, uint8_t bg) {
   if (c == '\n') {
     while(CurrVGAColumn >= VGA_WIDTH){
       CurrVGARow++;
@@ -26,17 +28,32 @@ void putc(char c) {
       return;
     } else {
       CurrVGAColumn--;
-      io_write_char_vga(' ', (CurrVGARow * VGA_WIDTH) + CurrVGAColumn);
+      io_write_char_vga(' ', fg, bg, (CurrVGARow * VGA_WIDTH) + CurrVGAColumn);
     }
   } else {
-    io_write_char_vga(c, (CurrVGARow * VGA_WIDTH) + CurrVGAColumn);
+    io_write_char_vga(c, fg, bg, (CurrVGARow * VGA_WIDTH) + CurrVGAColumn);
     CurrVGAColumn++;
   }
 }
 
 void puts(char *str) {
+  uint8_t fg;
+  char buff[5];
+  uint8_t bg = 0;
+  uint8_t j = 0;
   for (vuint32_t i = 0; str[i] != '\0'; i++) {
-    putc(str[i]);
+    /*
+    if(str[i] == '\033'){
+      i++;
+      if(str[i] == '['){
+        i++;
+        memcpycUntil(buff, str+i, 'm');
+        itoa()
+        }
+      }
+    }
+    */
+    putc(str[i], VGA_LIGHT_GRAY, VGA_BLACK);
   }
 }
 
@@ -58,7 +75,7 @@ void sscanf(char *buff){
       c = scancodeToChar(code);
       if(c == '\0') continue;
       else if(c == '\n'){
-        putc('\n');
+        putc('\n', VGA_LIGHT_GRAY, VGA_BLACK);
         buff[buffIndex] = '\0';
         break;
       } else if(c == '\b'){
@@ -68,12 +85,12 @@ void sscanf(char *buff){
         }
         buffIndex--;
         buff[buffIndex] = '\0';
-        putc(c);
+        putc(c, VGA_LIGHT_GRAY, VGA_BLACK);
       } else if(c == '\t'){
         for(vuint32_t i = 0; i < 2; i++){
           buff[buffIndex] = ' ';
           buffIndex++;
-          putc(' ');
+          putc(' ', VGA_LIGHT_GRAY, VGA_BLACK);
         }
       } else if(CtrlPressed && c == 'l'){
         clear_vga();
@@ -83,7 +100,7 @@ void sscanf(char *buff){
       else {
         buff[buffIndex] = c;
         buffIndex++;
-        putc(c);
+        putc(c, VGA_LIGHT_GRAY, VGA_BLACK);
       }
     }
   }
@@ -91,7 +108,7 @@ void sscanf(char *buff){
 
 void clear_vga(){
   for(uint32_t i = 0; i != VGA_WIDTH * VGA_HEIGHT; i++){
-    io_write_char_vga(' ', i);
+    io_write_char_vga(' ', VGA_LIGHT_GRAY, VGA_BLACK, i);
   }
   CurrVGAColumn = 0;
   CurrVGARow = 0;

@@ -6,4 +6,7 @@
 // as it stores the string value there.
 void itoa(int val, char* str); 
 
+// Converts a string to a int.
+int atoi(char* str);
+
 #endif

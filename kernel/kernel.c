@@ -1,7 +1,10 @@
 #include "NLIBC/stdint.h"
 #include "NLIBC/stdio.c"
+#include "NLIBC/stdlib.c"
 #include "NLIBC/string.c"
+#include "nkernel/io.h"
 #include "nkernel/utifuncs.c"
+#include "NLIBC/math.c"
 
 void kernel_main(uint32_t magic, uint32_t addr){
   clear_vga();
@@ -28,7 +31,7 @@ void kernel_main(uint32_t magic, uint32_t addr){
       puts(cmd);
       puts("' not found.\n");
     }
-    putc('\n');
+    putc('\n', VGA_LIGHT_GRAY, VGA_BLACK);
 
     memsetc(cmd, '\0', 1024);
   }

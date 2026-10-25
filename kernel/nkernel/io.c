@@ -2,13 +2,15 @@
 #define NKERNEL_IO_C
 
 #include "io.h"
+#include "stdint.h"
 
 vuint16_t *vga = (uint16_t *)0xB8000;
 vuint8_t shiftPressed = 0;
 vuint8_t capsLockEnabled = 0;
 
-void io_write_char_vga(char c, uint32_t index){
-  vga[index] = c | (0x07 << 8);
+void io_write_char_vga(char c, uint8_t fg, uint8_t bg, uint32_t index){
+  uint8_t final = fg | (bg << 4);
+  vga[index] = c | (final << 8);
 }
 
 int keyboardPoll(uint8_t* scancode){

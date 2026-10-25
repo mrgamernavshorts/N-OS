@@ -17,11 +17,31 @@
 #define PS2_DATA 0x60
 #define PS2_STATUS 0x64
 
+// For VGA foreground/background colors.
+enum {
+  VGA_BLACK = 0x0,
+  VGA_BLUE = 0x1,
+  VGA_GREEN = 0x2,
+  VGA_CYAN = 0x3,
+  VGA_RED = 0x4,
+  VGA_PURPLE = 0x5,
+  VGA_BROWN = 0x6,
+  VGA_LIGHT_GRAY = 0x7,
+  VGA_DARK_GRAY = 0x8,
+  VGA_LIGHT_BLUE = 0x9,
+  VGA_LIGHT_GREEN = 0xA,
+  VGA_LIGHT_CYAN = 0xB,
+  VGA_LIGHT_RED = 0xC,
+  VGA_LIGHT_MAGENTA = 0xD,
+  VGA_YELLOW = 0xE,
+  VGA_WHITE = 0xF
+};
+
 extern uint8_t inb(uint16_t port); // Recive from a hardware port.
 extern void outb(uint16_t port, uint8_t value); // Send to a hardware port.
 
 // Writes a char onto the VGA MMIO at an Index
-void io_write_char_vga(char c, uint32_t index); 
+void io_write_char_vga(char c, uint8_t fg, uint8_t bg, uint32_t index); 
 
 // Polls the keyboard for a scancode, and if one is found,
 // writes the scancode into `scancode`(Passed in by Refrence).
