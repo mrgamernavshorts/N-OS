@@ -52,6 +52,8 @@ void puts(char *str) {
           case '5': mode = '5'; break;
           case '6': mode = '6'; break;
           case '7': mode = '7'; break;
+          case '8': mode = '8'; break;
+          case '9': mode = '9'; break;
         }
         i += 2;
       }
@@ -66,6 +68,8 @@ void puts(char *str) {
       case '5': putc(str[i], VGA_PURPLE, VGA_BLACK); break;
       case '6': putc(str[i], VGA_CYAN, VGA_BLACK); break;
       case '7': putc(str[i], VGA_LIGHT_GRAY, VGA_BLACK); break;
+      case '8': putc(str[i], VGA_YELLOW, VGA_BLACK); break;
+      case '9': putc(str[i], VGA_WHITE, VGA_BLACK); break;
     }
   }
 }

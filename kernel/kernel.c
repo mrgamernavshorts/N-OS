@@ -18,7 +18,7 @@ void kernel_main(uint32_t magic, uint32_t addr){
 
   char cmd[1024];
   for(;;){
-    puts("$ ");
+    puts("\033[38m$ ");
     sscanf(cmd);
     if(!strcmp(cmd, "help")){
       puts("nosfetch - Prints the N-OS ASCII art.\nclear - well; it uh... clears :D\n");
