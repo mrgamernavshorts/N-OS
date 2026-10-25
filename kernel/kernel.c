@@ -5,6 +5,7 @@
 #include "nkernel/io.h"
 #include "nkernel/utifuncs.c"
 #include "NLIBC/math.c"
+#include "nkernel/utifuncs.h"
 
 void kernel_main(uint32_t magic, uint32_t addr){
   clear_vga();
@@ -21,12 +22,17 @@ void kernel_main(uint32_t magic, uint32_t addr){
     puts("\033[38m$ ");
     sscanf(cmd);
     if(!strcmp(cmd, "help")){
-      puts("nosfetch - Prints the N-OS ASCII art.\nclear - well; it uh... clears :D\n");
+      puts("\033[36mnosfetch\033[37m - Prints the N-OS ASCII art.\n\033[36mclear\033[37m - well; it uh... clears :D\n\033[36mreboot\033[37m - Reboot the system.\n");
     } else if(!strcmp(cmd, "nosfetch")){
       puts("|\\\\  ||   //==\\\\    //==\\\\ \n||\\\\ || - ||  ||    \\\\ \n|| \\\\|| - ||  ||     \\\\ \n||  \\\\|   \\\\==// \\\\==// \n");
     } else if(!strcmp(cmd, "clear")){
       clear_vga();
-    } else if(!SSCANF_COMBINATION_HANDELED) {
+    } else if(!strcmp("reboot", cmd)){
+      puts("Calling kernel reboot...\n");
+      utifuncs_nkernel_reboot();
+      freeze();
+    }
+    else if(!SSCANF_COMBINATION_HANDELED) {
       puts("Command '");
       puts(cmd);
       puts("' not found.\n");

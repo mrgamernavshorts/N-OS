@@ -2,7 +2,6 @@
 #define NKERNEL_UTIFUNCS
 
 #include "../NLIBC/stdio.c"
-#include "io.c"
 
 extern void freeze(); // Freezes the entire system.
 
@@ -13,5 +12,11 @@ extern void freeze(); // Freezes the entire system.
 
 // Prints a Kernel panic message.
 void utifuncs_nkernel_panic(char* message);
+
+// Reboots the entire system.
+void utifuncs_nkernel_reboot();
+
+// Poweroff's the entire system.
+void utifuncs_nkernel_poweroff();
 
 #endif

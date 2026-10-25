@@ -2,13 +2,15 @@
 #define NKERNEL_UTIFUNCS_C
 
 #include "utifuncs.h"
+#include "io.c"
+#include "io.h"
 
 // A kernle panic message :O
 /*
-/--\ /--\ |\   | --- /---  |
-|  | |  | | \  |  |  |     |
-|--| |--| |  \ |  |  |     |
-|    |  | |   \| --- \---  O
+//==\\ //==\\ ||\\   || ==== //==   ||
+||  || ||  || || \\  ||  ||  ||     ||
+||==|| ||==|| ||  \\ ||  ||  ||     ||
+||     ||  || ||   \\|| ==== \\==   :(
 */
 
 void utifuncs_nkernel_panic(char *message){
@@ -22,4 +24,15 @@ void utifuncs_nkernel_panic(char *message){
   freeze();
 }
 
+void utifuncs_nkernel_reboot(){
+  uint8_t idk = 0x02;
+  while(idk == 0x02){
+    idk = inb(PS2_STATUS); // Wait until the keyboard's input buffer is empty.
+  }
+  outb(PS2_STATUS, 0xFE); // HAHA reboot GO BRRRRRRRRRRRRRR!
+}
+
+void utifuncs_nkernel_poweroff(){
+ // Will be done soon :D 
+}
 #endif
