@@ -1,6 +1,6 @@
 #ifndef NLIBC_STDIO_C
 #define NLIBC_STDIO_C
-
+// clang-format off
 #include "stdio.h"
 #include "stdint.h"
 #include "../nkernel/io.c"
@@ -54,6 +54,12 @@ void puts(char *str) {
           case '7': mode = '7'; break;
           case '8': mode = '8'; break;
           case '9': mode = '9'; break;
+          case 'a': mode = 'a'; break;
+          case 'b': mode = 'b'; break;
+          case 'c': mode = 'c'; break;
+          case 'd': mode = 'd'; break;
+          case 'e': mode = 'e'; break;
+          case 'f': mode = 'f'; break;
         }
         i += 2;
       }
@@ -70,6 +76,12 @@ void puts(char *str) {
       case '7': putc(str[i], VGA_LIGHT_GRAY, VGA_BLACK); break;
       case '8': putc(str[i], VGA_YELLOW, VGA_BLACK); break;
       case '9': putc(str[i], VGA_WHITE, VGA_BLACK); break;
+      case 'a': putc(str[i], VGA_DARK_GRAY, VGA_BLACK); break;
+      case 'b': putc(str[i], VGA_LIGHT_GREEN, VGA_BLACK); break;
+      case 'c': putc(str[i], VGA_LIGHT_MAGENTA, VGA_BLACK); break;
+      case 'd': putc(str[i], VGA_LIGHT_BLUE, VGA_BLACK); break;
+      case 'e': putc(str[i], VGA_LIGHT_CYAN, VGA_BLACK); break;
+      case 'f': putc(str[i], VGA_LIGHT_RED, VGA_BLACK); break;
     }
   }
 }
